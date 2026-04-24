@@ -1,4 +1,4 @@
-const CACHE_NAME = 'domiapp-v2';
+const CACHE_NAME = 'domiapp-v3';
 const urlsToCache = [
   'domi.html',
   'LOGO DOMIFASTER.png',

@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DomiApp - Mi Panel</title>
+    <!-- Estilo Premium -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#2596be">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js');
+        });
+      }
+    </script>
+    
+    <style>
+        :root {
+            --primary: #2596be;
+            --secondary: #6c5ce7;
+            --success: #00b894;
+            --warning: #f39c12;
+            --danger: #f72585;
+            --dark: #1e293b;
+            --light: #f8f9fa;
+            --gray: #94a3b8;
+            --glass: rgba(255, 255, 255, 0.9);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f0f2f5;
+            color: var(--dark);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- LOGIN SCREEN --- */
+        #login-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #2596be 0%, #1e293b 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            z-index: 1000;
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .login-card img {
+            max-width: 180px;
+            margin-bottom: 25px;
+        }
+
+        .login-card h2 {
+            margin: 0 0 10px 0;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .login-card p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+
+        .input-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+            outline: none;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .input-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 150, 190, 0.1);
+        }
+
+        .btn-login {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 15px;
+            border-radius: 15px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 8px 20px rgba(37, 150, 190, 0.3);
+        }
+
+        .btn-login:active {
+            transform: scale(0.95);
+        }
+
+        /* --- APP CONTENT --- */
+        #app-content {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        header {
+            padding: 20px;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 45px;
+            height: 45px;
+            background: var(--primary);
+            color: white;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(37, 150, 190, 0.3);
+        }
+
+        .user-name b {
+            display: block;
+            font-size: 1.1rem;
+            line-height: 1.2;
+        }
+
+        .user-name span {
+            font-size: 0.75rem;
+            color: var(--gray);
+            font-weight: 600;
+        }
+
+        .btn-logout {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            border: none;
+            background: #fff1f2;
+            color: var(--danger);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            padding-bottom: 30px;
+        }
+
+        .card-summary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 25px;
+            padding: 25px;
+            color: white;
+            box-shadow: 0 15px 30px rgba(108, 92, 231, 0.2);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-summary::after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            top: -50px;
+            right: -50px;
+        }
+
+        .card-summary label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-summary .main-amount {
+            font-size: 2.8rem;
+            font-weight: 900;
+            margin: 5px 0;
+            display: block;
+        }
+
+        /* --- STATUS BADGES --- */
+        .stat-badge {
+            font-size: 0.8rem;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 700;
+            color: white;
+            transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-badge i { font-size: 0.9rem; }
+
+        .status-free { background: #00b894 !important; }     /* Verde */
+        .status-route { background: #0984e3 !important; }    /* Azul */
+        .status-lunch { background: #f39c12 !important; }    /* Naranja */
+        .status-inactive { background: #636e72 !important; } /* Gris */
+
+        .stat-badge.offline {
+            background: rgba(255,255,255,0.15) !important;
+            color: #ddd;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            border: 1px solid #eef2f7;
+        }
+
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .icon-blue { background: #eef8fb; color: var(--primary); }
+        .icon-green { background: #e8f5e9; color: var(--success); }
+        .icon-purple { background: #f5f3ff; color: var(--secondary); }
+
+        .stat-data b {
+            display: block;
+            font-size: 1.3rem;
+            line-height: 1.1;
+        }
+
+        .stat-data label {
+            font-size: 0.7rem;
+            color: var(--gray);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 0 5px;
+        }
+
+        .section-title h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+
+        .deduction-list {
+            background: white;
+            border-radius: 20px;
+            padding: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            border: 1px solid #eef2f7;
+        }
+
+        .deduction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .deduction-item:last-child {
+            border-bottom: none;
+        }
+
+        .deduction-info b {
+            display: block;
+            font-size: 0.95rem;
+        }
+
+        .deduction-info span {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        .deduction-price {
+            font-weight: 800;
+            color: var(--danger);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .empty-state i {
+            display: block;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            opacity: 0.3;
+        }
+
+        /* --- BOTÓN WHATSAPP --- */
+        .btn-wa-support {
+            position: fixed;
+            bottom: 25px;
+            right: 20px;
+            background: #25D366;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+            text-decoration: none;
+            z-index: 200;
+        }
+
+        /* Animaciones */
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .animate-up {
+            animation: slideUp 0.5s ease forwards;
+        }
+
+        #error-msg {
+            color: #ff4757;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            font-weight: 600;
+            display: none;
+        }
+
+        /* Loader */
+        .loader {
+            width: 20px;
+            height: 20px;
+            border: 3px solid #FFF;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            display: none;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* --- CUSTOM MODAL --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            width: 90%;
+            max-width: 350px;
+            transform: scale(0.9);
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-content h3 {
+            margin: 0 0 15px 0;
+            color: var(--dark);
+            font-size: 1.3rem;
+            font-weight: 800;
+        }
+
+        .modal-content p {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-modal {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-cancel {
+            background: #f1f5f9;
+            color: var(--gray);
+        }
+
+        .btn-save {
+            background: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Pantalla de Login -->
+    <div id="login-screen">
+        <div class="login-card">
+            <img src="LOGO DOMIFASTER.png" alt="Domifaster">
+            <h2>Portal del Colaborador</h2>
+            <p>Ingresa con tu número de cédula para ver tus estadísticas y liquidación.</p>
+            
+            <div class="input-box">
+                <i class="fas fa-id-card"></i>
+                <input type="number" id="input-cc" placeholder="Tu número de cédula" autocomplete="username">
+            </div>
+            
+            <button class="btn-login" id="btn-entrar" onclick="intentarLogin()">
+                <span id="btn-text">Ingresar</span>
+                <span class="loader" id="login-loader"></span>
+            </button>
+            
+            <div id="error-msg">❌ Cédula no encontrada en el sistema.</div>
+        </div>
+    </div>
+
+    <!-- Contenido de la App -->
+    <div id="app-content">
+        <header>
+            <div class="user-profile">
+                <div class="avatar" id="domi-avatar" style="cursor:pointer; position:relative; overflow:hidden;" onclick="document.getElementById('upload-avatar').click()" title="Cambiar foto">--</div>
+                <div class="user-name" style="cursor:pointer;" onclick="editarNombreDomi()" title="Editar nombre">
+                    <b id="domi-nombre">Cargando...</b>
+                    <span id="domi-sede">--</span>
+                </div>
+                <input type="file" id="upload-avatar" accept="image/*" style="display:none;" onchange="handleAvatarUpload(event)">
+            </div>
+            <button class="btn-logout" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </header>
+
+        <main>
+            <div class="card-summary animate-up">
+                <label>Ganancia estimada de hoy</label>
+                <div class="main-amount" id="domi-total">$ 0</div>
+                <div id="stats-hoy" class="sub-info">
+                    <span class="stat-badge offline"><i class="fas fa-clock"></i> Buscando...</span>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card animate-up" style="animation-delay: 0.1s;">
+                    <div class="stat-icon icon-blue"><i class="fas fa-route"></i></div>
+                    <div class="stat-data">
+                        <b id="domi-rutas">0</b>
+                        <label>RUTAS</label>
+                    </div>
+                </div>
+                <div class="stat-card animate-up" style="animation-delay: 0.2s;">
+                    <div class="stat-icon icon-purple"><i class="fas fa-fish"></i></div>
+                    <div class="stat-data">
+                        <b id="domi-tortas">0</b>
+                        <label>TORTAS</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">
+                <h3>Resumen Semanal</h3>
+                <span class="date-badge">ÚLTIMOS 7 DÍAS</span>
+            </div>
+
+            <div id="deduccion-container" class="deduction-list animate-up" style="animation-delay: 0.3s;">
+                <div class="empty-state">
+                    <i class="fas fa-receipt"></i> Sin deducciones registradas.
+                </div>
+            </div>
+        </main>
+
+        <a href="https://wa.me/573000000000" class="btn-wa-support" target="_blank">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+
+    <!-- Modal Editar Perfil -->
+    <div class="modal-overlay" id="modal-edit-profile">
+        <div class="modal-content">
+            <h3>Editar Perfil</h3>
+            <p>Ingresa el nombre con el que quieres que te vean en la aplicación.</p>
+            <div class="input-box" style="margin-bottom:0;">
+                <i class="fas fa-user-edit"></i>
+                <input type="text" id="input-edit-name" placeholder="Tu alias o nombre corto">
+            </div>
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="cerrarModalPerfil()">Cancelar</button>
+                <button class="btn-modal btn-save" onclick="guardarPerfil()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        // CONFIGURACIÓN FIREBASE (Extraída de index.html)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDQn0bwqT5Y0LmAKqoNUFenR9ZezZnqJfA",
+            authDomain: "base-de-datos-domifaster.firebaseapp.com",
+            databaseURL: "https://base-de-datos-domifaster-default-rtdb.firebaseio.com",
+            projectId: "base-de-datos-domifaster",
+            storageBucket: "base-de-datos-domifaster.firebasestorage.app",
+            messagingSenderId: "429316461878",
+            appId: "1:429316461878:web:d1f4141c02b54549858f97",
+            measurementId: "G-39TSPK9171"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let currentUser = null;
+        let masterData = [];
+        let currentReportesSemana = [];
+        let currentDeducciones = [];
+
+        // --- Lógica de Login ---
+        window.intentarLogin = function() {
+            const cc = document.getElementById('input-cc').value.trim();
+            const btnText = document.getElementById('btn-text');
+            const loader = document.getElementById('login-loader');
+            const error = document.getElementById('error-msg');
+
+            if (!cc) return;
+
+            btnText.style.display = 'none';
+            loader.style.display = 'block';
+            error.style.display = 'none';
+
+            // Consultar maestro para validar CC
+            const maestroRef = ref(db, 'personal_maestro');
+            onValue(maestroRef, (snap) => {
+                const data = snap.val() || {};
+                const list = Object.entries(data);
+                const userEntry = list.find(([k, p]) => String(p.cedula).trim() === cc || String(p.contacto).trim() === cc);
+
+                if (userEntry) {
+                    localStorage.setItem('domi_user_cc', cc);
+                    iniciarSesionUI(userEntry[1], userEntry[0]);
+                } else {
+                    btnText.style.display = 'block';
+                    loader.style.display = 'none';
+                    error.style.display = 'block';
+                }
+            }, { onlyOnce: true });
+        };
+
+        window.currentUserKey = null;
+
+        window.updateProfile = function(updates) {
+            if(!window.currentUserKey) return;
+            const userRef = ref(db, `personal_maestro/${window.currentUserKey}`);
+            update(userRef, updates).then(() => {
+                if (updates.alias) {
+                    currentUser.alias = updates.alias;
+                    document.getElementById('domi-nombre').innerHTML = updates.alias + ` <i class="fas fa-pen" style="font-size:0.6rem; color:#ccc; margin-left:5px;"></i>`;
+                }
+                if (updates.foto) {
+                    currentUser.foto = updates.foto;
+                    document.getElementById('domi-avatar').innerHTML = `<img src="${updates.foto}" style="width:100%; height:100%; object-fit:cover;">`;
+                }
+            });
+        };
+
+        window.editarNombreDomi = function() {
+            const input = document.getElementById('input-edit-name');
+            input.value = currentUser.alias || currentUser.nombre;
+            const modal = document.getElementById('modal-edit-profile');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+            input.focus();
+        };
+
+        window.cerrarModalPerfil = function() {
+            const modal = document.getElementById('modal-edit-profile');
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 300);
+        };
+
+        window.guardarPerfil = function() {
+            const nuevoNombre = document.getElementById('input-edit-name').value.trim();
+            if(nuevoNombre !== "") {
+                window.updateProfile({ alias: nuevoNombre });
+                cerrarModalPerfil();
+            }
+        };
+
+        window.handleAvatarUpload = function(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const max = 150;
+                    let w = img.width; let h = img.height;
+                    if(w > h) { if(w > max) { h *= max/w; w = max; } }
+                    else { if(h > max) { w *= max/h; h = max; } }
+                    canvas.width = w; canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    const base64 = canvas.toDataURL('image/jpeg', 0.8);
+                    window.updateProfile({ foto: base64 });
+                };
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        function iniciarSesionUI(user, userKey) {
+            document.getElementById('login-screen').style.transform = 'translateY(-100%)';
+            document.getElementById('app-content').style.display = 'flex';
+            
+            currentUser = user;
+            window.currentUserKey = userKey;
+            
+            const displayNombre = user.alias || user.nombre;
+            if (user.foto) {
+                document.getElementById('domi-avatar').innerHTML = `<img src="${user.foto}" style="width:100%; height:100%; object-fit:cover;">`;
+            } else {
+                const iniciales = displayNombre.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                document.getElementById('domi-avatar').innerText = iniciales;
+            }
+            document.getElementById('domi-nombre').innerHTML = displayNombre + ` <i class="fas fa-pen" style="font-size:0.6rem; color:#ccc; margin-left:5px;"></i>`;
+            document.getElementById('domi-sede').innerText = `Sede ${user.sede || 'Global'}`;
+
+            const waLink = document.querySelector('.btn-wa-support');
+            if (waLink && user.contacto) {
+                // Personalizar el link de soporte si es necesario
+            }
+
+            escucharDatosDomi(user);
+        }
+
+        function escucharDatosDomi(user) {
+            const norm = (s) => (s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+            const nameNorm = norm(user.nombre);
+
+            function obtenerRangoSemanal() {
+                const hoy = new Date();
+                const diaSemana = hoy.getDay();
+                const diasAtrasAlDomingo = (diaSemana === 0) ? 7 : diaSemana;
+                const inicio = new Date(hoy);
+                inicio.setDate(hoy.getDate() - diasAtrasAlDomingo);
+                inicio.setHours(0, 0, 0, 0);
+                const fin = new Date(inicio);
+                fin.setDate(inicio.getDate() + 6);
+                fin.setHours(23, 59, 59, 999);
+                return { inicio, fin };
+            }
+
+            const rango = obtenerRangoSemanal();
+            const fI = rango.inicio.getTime();
+            const fF = rango.fin.getTime();
+
+            // --- 1. ESCUCHAR DOMICILIARIOS ACTIVOS (HOY) ---
+            const domRef = ref(db, 'domiciliarios');
+            onValue(domRef, (snap) => {
+                const data = snap.val() || {};
+                const lista = Object.values(data);
+                
+                const hoy = lista.find(d => {
+                    if(!d || !d.nombre) return false;
+                    const nCheck = norm(d.nombre);
+                    return nCheck === nameNorm || nCheck.includes(nameNorm) || nameNorm.includes(nCheck);
+                });
+                
+                let rankHoy = null;
+                if (hoy) {
+                    const miSede = hoy.sede || user.sede || 'Global';
+                    const domisSede = lista.filter(d => (d.sede || 'Global') === miSede);
+                    
+                    domisSede.sort((a, b) => {
+                        const rA = parseInt(a.entregasRealizadas || 0);
+                        const rB = parseInt(b.entregasRealizadas || 0);
+                        if (rB !== rA) return rB - rA;
+                        const tA = parseInt(a.tortasPescado || a.t || 0);
+                        const tB = parseInt(b.tortasPescado || b.t || 0);
+                        return tB - tA;
+                    });
+                    
+                    const userIndex = domisSede.findIndex(d => {
+                        if(!d || !d.nombre) return false;
+                        const nCheck = norm(d.nombre);
+                        return nCheck === nameNorm || nCheck.includes(nameNorm) || nameNorm.includes(nCheck);
+                    });
+
+                    if (userIndex >= 0 && userIndex < 3 && parseInt(domisSede[userIndex].entregasRealizadas || 0) > 0) {
+                        rankHoy = userIndex + 1;
+                    }
+                }
+                
+                const statsHoy = document.getElementById('stats-hoy');
+                if (hoy) {
+                    const liq = calcularLiquidacionDomi(hoy, user);
+                    animateValue("domi-total", 0, liq.total, 1000);
+                    document.getElementById('domi-rutas').innerText = hoy.entregasRealizadas || 0;
+                    document.getElementById('domi-tortas').innerText = hoy.tortasPescado || hoy.t || 0;
+                    
+                    // Mapeo de estados con colores e iconos
+                    const estados = {
+                        "activo": { label: "Libre", icon: "fa-check-circle", class: "status-free" },
+                        "ruta": { label: "En Ruta", icon: "fa-motorcycle", class: "status-route" },
+                        "almuerzo": { label: "Almorzando", icon: "fa-hamburger", class: "status-lunch" },
+                        "inactivo": { label: "Inactivo", icon: "fa-minus-circle", class: "status-inactive" }
+                    };
+                    const st = estados[hoy.estado] || { label: "En turno", icon: "fa-user-clock", class: "" };
+
+                    let rankBadge = '';
+                    if (rankHoy) {
+                        const medal = rankHoy === 1 ? '🥇' : (rankHoy === 2 ? '🥈' : '🥉');
+                        rankBadge = `<div style="background:var(--warning); color:white; padding:5px 12px; border-radius:15px; font-size:0.75rem; font-weight:800; display:inline-flex; align-items:center; gap:5px; margin-top:10px; animation: zoomIn 0.3s ease;"><i class="fas fa-trophy"></i> TOP ${rankHoy} DE HOY ${medal}</div>`;
+                    }
+
+                    statsHoy.innerHTML = `
+                        <div class="stat-badge ${st.class}">
+                            <i class="fas ${st.icon}"></i> ${st.label}
+                        </div>
+                        <div style="font-size:0.7rem; opacity:0.9; margin-top:5px; display:flex; gap:10px; justify-content:center;">
+                            <span><i class="fas fa-sign-in-alt"></i> ${hoy.inicioLaboral || '--'}</span>
+                            <span><i class="fas fa-sign-out-alt"></i> ${hoy.finLaboral || '--'}</span>
+                        </div>
+                        ${rankBadge}
+                    `;
+                } else {
+                    document.getElementById('domi-total').innerText = "$ 0";
+                    document.getElementById('domi-rutas').innerText = "0";
+                    document.getElementById('domi-tortas').innerText = "0";
+                    statsHoy.innerHTML = `<span class="stat-badge offline"><i class="fas fa-clock"></i> Sin registro hoy</span>`;
+                }
+            });
+
+            // --- 3. ESCUCHAR HISTORIAL ---
+            const histRef = ref(db, 'historial');
+            onValue(histRef, (snap) => {
+                try {
+                    const data = snap.val() || {};
+                    const reportesSemana = [];
+                    Object.entries(data).forEach(([key, h]) => {
+                        if (!h || !h.detalle || !Array.isArray(h.detalle)) return;
+                        const ts = parseInt(h.timestamp || key);
+                        if (ts >= fI && ts <= fF) {
+                            const d = h.detalle.find(det => {
+                                if (!det || !det.n) return false;
+                                const nCheck = norm(det.n);
+                                return nCheck === nameNorm || nCheck.includes(nameNorm) || nameNorm.includes(nCheck);
+                            });
+                            
+                            if (d) {
+                                const miSede = d.sede || d.s || user.sede || 'Global';
+                                const domisSedeHist = h.detalle.filter(det => (det.sede || det.s || 'Global') === miSede);
+                                
+                                domisSedeHist.sort((a,b) => {
+                                    const rA = parseInt(a.e || a.entregasRealizadas || 0);
+                                    const rB = parseInt(b.e || b.entregasRealizadas || 0);
+                                    if (rB !== rA) return rB - rA;
+                                    const tA = parseInt(a.t || a.tortas || 0);
+                                    const tB = parseInt(b.t || b.tortas || 0);
+                                    return tB - tA;
+                                });
+
+                                let rankHist = null;
+                                const userIndexHist = domisSedeHist.findIndex(det => {
+                                    if(!det || !det.n) return false;
+                                    const nCheck = norm(det.n);
+                                    return nCheck === nameNorm || nCheck.includes(nameNorm) || nameNorm.includes(nCheck);
+                                });
+
+                                if (userIndexHist >= 0 && userIndexHist < 3 && parseInt(domisSedeHist[userIndexHist].e || domisSedeHist[userIndexHist].entregasRealizadas || 0) > 0) {
+                                    rankHist = userIndexHist + 1;
+                                }
+
+                                reportesSemana.push({ fecha: h.fecha, timestamp: ts, rank: rankHist, ...d });
+                            }
+                        }
+                    });
+                    currentReportesSemana = reportesSemana;
+                    renderDetalleSemana();
+                } catch (e) { console.error(e); }
+            });
+
+            // --- 4. DEDUCCIONES ---
+            const weekKey = rango.inicio.toISOString().split('T')[0];
+            const dedRef = ref(db, `deducciones_semanales/${weekKey}_${nameNorm}`);
+            onValue(dedRef, (snap) => {
+                const savedData = snap.val();
+                let listaDeds = [];
+                if (Array.isArray(savedData)) listaDeds = savedData;
+                else if (savedData && typeof savedData === 'object') listaDeds = Object.values(savedData);
+
+                const container = document.getElementById('deduccion-container');
+                if (listaDeds.length > 0) {
+                    let html = "";
+                    listaDeds.filter(d => (d.v || d.valor || 0) > 0).forEach(d => {
+                        html += `<div class="deduction-item">
+                                    <div class="deduction-info"><b>${d.c || d.concepto || 'Deducción'}</b><span>Semana Actual</span></div>
+                                    <div class="deduction-price">-$ ${parseInt(d.v || d.valor || 0).toLocaleString()}</div>
+                                 </div>`;
+                    });
+                    container.innerHTML = html || `<div class="empty-state">Sin deducciones pendientes.</div>`;
+                } else {
+                    container.innerHTML = `<div class="empty-state">Sin deducciones pendientes.</div>`;
+                }
+                
+                currentDeducciones = listaDeds;
+                renderDetalleSemana();
+            });
+        }
+
+        function renderDetalleSemana() {
+            const main = document.querySelector('main');
+            if (!main) return;
+
+            let historyWrapper = document.getElementById('history-wrapper');
+            if(!historyWrapper) {
+                historyWrapper = document.createElement('div');
+                historyWrapper.id = 'history-wrapper';
+                main.appendChild(historyWrapper);
+            }
+
+            const unicos = [];
+            const fechasVistas = new Set();
+            currentReportesSemana.forEach(r => {
+                if (!fechasVistas.has(r.fecha)) {
+                    fechasVistas.add(r.fecha);
+                    unicos.push(r);
+                }
+            });
+
+            let totalBruto = 0;
+            let html = `
+                <div class="section-title" style="margin-top:25px">
+                    <h3>Detalle Diario (Semana)</h3>
+                </div>
+                <div class="deduction-list">
+            `;
+            
+            if (unicos.length === 0) {
+                html += `<div class="empty-state">Sin actividad registrada en esta semana.</div>`;
+            } else {
+                unicos.sort((a,b) => b.timestamp - a.timestamp).forEach(r => {
+                    const totDia = parseInt(r.tot || 0);
+                    totalBruto += totDia;
+                    
+                    let rankBadgeHtml = '';
+                    if (r.rank) {
+                        const medal = r.rank === 1 ? '🥇' : (r.rank === 2 ? '🥈' : '🥉');
+                        rankBadgeHtml = `<span style="background:var(--warning); color:white; padding:2px 6px; border-radius:10px; font-size:0.6rem; font-weight:800; margin-left:5px; vertical-align:middle;">TOP ${r.rank} ${medal}</span>`;
+                    }
+
+                    html += `
+                        <div class="deduction-item" style="border-left: 4px solid var(--primary); margin-bottom: 5px; border-radius: 0 14px 14px 0;">
+                            <div class="deduction-info">
+                                <b style="color:var(--primary)">${r.fecha} ${rankBadgeHtml}</b>
+                                <span>${r.e || 0} Rutas | ${r.t || r.tortas || 0} Tortas</span>
+                            </div>
+                            <div class="stat-data" style="text-align:right">
+                                <b style="font-size:1.1rem">$ ${totDia.toLocaleString()}</b>
+                                <label style="font-size:0.6rem">Sueldo Diario</label>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            let totalDescuentos = 0;
+            currentDeducciones.filter(d => (d.v || d.valor || 0) > 0).forEach(d => {
+                totalDescuentos += parseInt(d.v || d.valor || 0);
+            });
+
+            const totalNeto = totalBruto - totalDescuentos;
+
+            if (unicos.length > 0 || totalDescuentos > 0) {
+                html += `
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 2px dashed #eef2f7;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.9rem;">
+                            <span>Subtotal Semana:</span>
+                            <b>$ ${totalBruto.toLocaleString()}</b>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem; color:var(--danger);">
+                            <span>Deducciones:</span>
+                            <b>- $ ${totalDescuentos.toLocaleString()}</b>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:1.2rem; color:var(--dark);">
+                            <b>TOTAL A PAGAR:</b>
+                            <b style="color:var(--success); font-size:1.4rem;">$ ${Math.max(0, totalNeto).toLocaleString()}</b>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            html += `</div>`;
+            historyWrapper.innerHTML = html;
+        }
+
+        function calcularLiquidacionDomi(d, m) {
+            const norm = (s) => (s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+            const n = norm(d.nombre);
+            
+            const isCoord = ["cristian munoz", "andres munoz", "nilton cardona"].includes(n);
+            const isLid = ["jhon vega", "kevin villada"].includes(n);
+            
+            let baseDaily = (m.salario) ? parseInt(m.salario.replace(/\D/g, "")) : 100000;
+            let valBase = (d.inicioLaboral && d.inicioLaboral !== "--:--") || isCoord || isLid ? baseDaily : 0;
+
+            let ent = d.entregasRealizadas || 0;
+            let valBono = (!isCoord && !isLid && ent > 18) ? (ent - 18) * 10000 : 0;
+
+            const parsear = (str) => {
+                if(!str) return null;
+                const match = str.match(/(\d+):(\d+)\s*(AM|PM)/i);
+                if (!match) return null;
+                let hrs = parseInt(match[1]);
+                let mins = parseInt(match[2]);
+                if (match[3].toUpperCase() === "PM" && hrs < 12) hrs += 12;
+                if (match[3].toUpperCase() === "AM" && hrs === 12) hrs = 0;
+                return hrs * 60 + mins;
+            };
+
+            let valExtra = 0;
+            const mIng = parsear(d.inicioLaboral);
+            const mSal = parsear(d.finLaboral);
+            if (mIng !== null && mSal !== null) {
+                let dif = mSal - mIng;
+                if (dif < 0) dif += 1440;
+                if (dif > 510) {
+                    valExtra = Math.floor((dif - 510) / 30) * 7000;
+                }
+            }
+
+            return { total: valBase + valBono + valExtra };
+        }
+
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            if (!obj) return;
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const val = Math.floor(progress * (end - start) + start);
+                obj.innerText = "$ " + val.toLocaleString();
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        window.logout = function() {
+            localStorage.removeItem('domi_user_cc');
+            window.location.reload();
+        }
+
+        // Auto-login si ya existe CC guardada
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedCC = localStorage.getItem('domi_user_cc');
+            if (savedCC) {
+                document.getElementById('input-cc').value = savedCC;
+                intentarLogin();
+            }
+        });
+
+    </script>
+</body>
+</html>

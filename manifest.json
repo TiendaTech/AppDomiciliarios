@@ -1,0 +1,21 @@
+{
+  "name": "Domifaster Colaboradores",
+  "short_name": "DomiApp",
+  "description": "Panel de control para colaboradores de Domifaster",
+  "start_url": "domi.html",
+  "display": "standalone",
+  "background_color": "#2596be",
+  "theme_color": "#2596be",
+  "icons": [
+    {
+      "src": "LOGO DOMIFASTER.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "LOGO DOMIFASTER.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

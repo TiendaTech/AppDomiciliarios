@@ -150,12 +150,12 @@
         }
 
         header {
-            padding: 20px;
+            padding: 15px 20px;
             background: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -168,17 +168,31 @@
         }
 
         .avatar {
-            width: 45px;
-            height: 45px;
+            width: 70px;
+            height: 70px;
             background: var(--primary);
             color: white;
-            border-radius: 15px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 800;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 10px rgba(37, 150, 190, 0.3);
+            font-size: 1.8rem;
+            box-shadow: 0 8px 16px rgba(37, 150, 190, 0.25);
+            border: 3px solid white;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .avatar:active {
+            transform: scale(0.95);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
 
         .user-name b {
@@ -518,6 +532,71 @@
             background: var(--primary);
             color: white;
         }
+
+        /* --- LIGHTBOX --- */
+        #lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 3000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        #lightbox img {
+            width: 85vw;
+            height: 85vw;
+            max-width: 400px;
+            max-height: 400px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 0 60px rgba(37, 150, 190, 0.4);
+            transform: scale(0.5);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 4px solid rgba(255,255,255,0.2);
+        }
+
+        #lightbox.active {
+            display: flex;
+        }
+
+        #lightbox.active img {
+            transform: scale(1);
+        }
+
+        .close-lightbox {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-change-photo {
+            margin-top: 20px;
+            background: white;
+            color: var(--dark);
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            border: none;
+        }
     </style>
 </head>
 
@@ -548,8 +627,8 @@
     <div id="app-content">
         <header>
             <div class="user-profile">
-                <div class="avatar" id="domi-avatar" style="cursor:pointer; position:relative; overflow:hidden;" onclick="document.getElementById('upload-avatar').click()" title="Cambiar foto">--</div>
-                <div class="user-name" style="cursor:pointer;" onclick="editarNombreDomi()" title="Editar nombre">
+                <div class="avatar" id="domi-avatar" onclick="mostrarFotoGrande()">--</div>
+                <div class="user-name" onclick="editarNombreDomi()">
                     <b id="domi-nombre">Cargando...</b>
                     <span id="domi-sede">--</span>
                 </div>
@@ -559,6 +638,15 @@
                 <i class="fas fa-sign-out-alt"></i>
             </button>
         </header>
+
+        <!-- Lightbox para la foto -->
+        <div id="lightbox" onclick="cerrarLightbox()">
+            <div class="close-lightbox"><i class="fas fa-times"></i></div>
+            <img id="lightbox-img" src="" alt="Profile" onclick="event.stopPropagation()">
+            <button class="btn-change-photo" onclick="event.stopPropagation(); cerrarLightbox(); document.getElementById('upload-avatar').click()">
+                <i class="fas fa-camera"></i> Cambiar Foto
+            </button>
+        </div>
 
         <main>
             <div class="card-summary animate-up">
@@ -686,7 +774,8 @@
                 }
                 if (updates.foto) {
                     currentUser.foto = updates.foto;
-                    document.getElementById('domi-avatar').innerHTML = `<img src="${updates.foto}" style="width:100%; height:100%; object-fit:cover;">`;
+                    document.getElementById('domi-avatar').innerHTML = `<img src="${updates.foto}">`;
+                    document.getElementById('lightbox-img').src = updates.foto;
                 }
             });
         };
@@ -722,19 +811,39 @@
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const max = 150;
+                    const max = 800;
                     let w = img.width; let h = img.height;
                     if(w > h) { if(w > max) { h *= max/w; w = max; } }
                     else { if(h > max) { w *= max/h; h = max; } }
                     canvas.width = w; canvas.height = h;
                     const ctx = canvas.getContext('2d');
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
                     ctx.drawImage(img, 0, 0, w, h);
-                    const base64 = canvas.toDataURL('image/jpeg', 0.8);
+                    const base64 = canvas.toDataURL('image/jpeg', 0.95);
                     window.updateProfile({ foto: base64 });
                 };
                 img.src = evt.target.result;
             };
             reader.readAsDataURL(file);
+        };
+
+        window.mostrarFotoGrande = function() {
+            if (currentUser && currentUser.foto) {
+                document.getElementById('lightbox-img').src = currentUser.foto;
+                const lb = document.getElementById('lightbox');
+                lb.style.display = 'flex';
+                setTimeout(() => lb.classList.add('active'), 10);
+            } else {
+                // No photo yet, open file picker directly
+                document.getElementById('upload-avatar').click();
+            }
+        };
+
+        window.cerrarLightbox = function() {
+            const lb = document.getElementById('lightbox');
+            lb.classList.remove('active');
+            setTimeout(() => lb.style.display = 'none', 300);
         };
 
         function iniciarSesionUI(user, userKey) {
@@ -746,7 +855,8 @@
             
             const displayNombre = user.alias || user.nombre;
             if (user.foto) {
-                document.getElementById('domi-avatar').innerHTML = `<img src="${user.foto}" style="width:100%; height:100%; object-fit:cover;">`;
+                document.getElementById('domi-avatar').innerHTML = `<img src="${user.foto}">`;
+                document.getElementById('lightbox-img').src = user.foto;
             } else {
                 const iniciales = displayNombre.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
                 document.getElementById('domi-avatar').innerText = iniciales;

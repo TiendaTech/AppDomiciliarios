@@ -210,7 +210,7 @@
             flex: 1;
             padding: 20px;
             overflow-y: auto;
-            padding-bottom: 30px;
+            padding-bottom: 100px;
         }
 
         .card-summary {
@@ -303,6 +303,11 @@
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
+        }
+
+        .card-summary .sub-info {
+            display: block;
+            margin-top: 15px;
         }
 
         .icon-blue { background: #eef8fb; color: var(--primary); }
@@ -834,18 +839,25 @@
                     let rankBadge = '';
                     if (rankHoy) {
                         const medal = rankHoy === 1 ? '🥇' : (rankHoy === 2 ? '🥈' : '🥉');
-                        rankBadge = `<div style="background:var(--warning); color:white; padding:5px 12px; border-radius:15px; font-size:0.75rem; font-weight:800; display:inline-flex; align-items:center; gap:5px; margin-top:10px; animation: zoomIn 0.3s ease;"><i class="fas fa-trophy"></i> TOP ${rankHoy} DE HOY ${medal}</div>`;
+                        rankBadge = `<div style="background:var(--warning); color:white; padding:5px 12px; border-radius:15px; font-size:0.75rem; font-weight:800; display:inline-flex; align-items:center; gap:5px; animation: zoomIn 0.3s ease;"><i class="fas fa-trophy"></i> TOP ${rankHoy} ${medal}</div>`;
                     }
 
                     statsHoy.innerHTML = `
-                        <div class="stat-badge ${st.class}">
-                            <i class="fas ${st.icon}"></i> ${st.label}
+                        <div style="display:flex; flex-direction:column; gap:12px; width:100%;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                                <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                                    <div class="stat-badge ${st.class}">
+                                        <i class="fas ${st.icon}"></i> ${st.label}
+                                    </div>
+                                    ${rankBadge}
+                                </div>
+                                <div style="background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">
+                                    <span><i class="fas fa-sign-in-alt" style="opacity:0.7"></i> ${hoy.inicioLaboral && hoy.inicioLaboral !== '--:--' ? hoy.inicioLaboral : '--:--'}</span>
+                                    <span style="opacity:0.5">|</span>
+                                    <span><i class="fas fa-sign-out-alt" style="opacity:0.7"></i> ${hoy.finLaboral && hoy.finLaboral !== '--:--' ? hoy.finLaboral : '--:--'}</span>
+                                </div>
+                            </div>
                         </div>
-                        <div style="font-size:0.7rem; opacity:0.9; margin-top:5px; display:flex; gap:10px; justify-content:center;">
-                            <span><i class="fas fa-sign-in-alt"></i> ${hoy.inicioLaboral || '--'}</span>
-                            <span><i class="fas fa-sign-out-alt"></i> ${hoy.finLaboral || '--'}</span>
-                        </div>
-                        ${rankBadge}
                     `;
                 } else {
                     document.getElementById('domi-total').innerText = "$ 0";

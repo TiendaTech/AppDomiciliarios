@@ -1,8 +1,8 @@
-const CACHE_NAME = 'domiapp-v3';
+const CACHE_NAME = 'domiapp-v4';
 const urlsToCache = [
-  'domi.html',
-  'LOGO DOMIFASTER.png',
-  'manifest.json'
+  './domi.html',
+  './LOGO DOMIFASTER.png',
+  './manifest.json'
 ];
 
 self.addEventListener('install', event => {

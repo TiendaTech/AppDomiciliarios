@@ -1,6 +1,6 @@
 const CACHE_NAME = 'domiapp-v4';
 const urlsToCache = [
-  './domi.html',
+  './index.html',
   './LOGO DOMIFASTER.png',
   './manifest.json'
 ];

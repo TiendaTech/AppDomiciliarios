@@ -1161,7 +1161,7 @@
             if (unicos.length === 0) {
                 html += `<div class="empty-state">Sin actividad registrada en esta semana.</div>`;
             } else {
-                unicos.sort((a,b) => b.timestamp - a.timestamp).forEach(r => {
+                unicos.sort((a,b) => a.timestamp - b.timestamp).forEach(r => {
                     const totDia = parseInt(r.tot || 0);
                     totalBruto += totDia;
                     

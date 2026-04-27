@@ -1031,6 +1031,35 @@
                         rankBadge = `<div style="background:var(--warning); color:white; padding:5px 12px; border-radius:15px; font-size:0.75rem; font-weight:800; display:inline-flex; align-items:center; gap:5px; animation: zoomIn 0.3s ease;"><i class="fas fa-trophy"></i> TOP ${rankHoy} ${medal}</div>`;
                     }
 
+                    let lunchTimerHtml = '';
+                    if (hoy.estado === "almorzando" && hoy.finAlmuerzo) {
+                        lunchTimerHtml = `
+                            <div id="lunch-timer" style="background:rgba(255,255,255,0.25); padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:800; display:inline-flex; align-items:center; gap:5px; color:white; border: 1px solid rgba(255,255,255,0.3); animation: fadeIn 0.3s ease;">
+                                <i class="fas fa-clock"></i> <span id="lunch-countdown">--:--</span>
+                            </div>
+                        `;
+                        // Iniciar temporizador
+                        if (window.lunchInterval) clearInterval(window.lunchInterval);
+                        setTimeout(() => {
+                            const timerEl = document.getElementById('lunch-countdown');
+                            if (!timerEl) return;
+                            const refreshLunch = () => {
+                                const diff = Math.max(0, Math.floor((hoy.finAlmuerzo - Date.now()) / 1000));
+                                const mm = Math.floor(diff / 60);
+                                const ss = diff % 60;
+                                timerEl.innerText = `${mm}:${ss.toString().padStart(2, '0')}`;
+                                if (diff <= 0) {
+                                    timerEl.innerText = "¡TIEMPO!";
+                                    timerEl.parentElement.style.background = "var(--danger)";
+                                }
+                            };
+                            refreshLunch();
+                            window.lunchInterval = setInterval(refreshLunch, 1000);
+                        }, 100);
+                    } else {
+                        if (window.lunchInterval) clearInterval(window.lunchInterval);
+                    }
+
                     statsHoy.innerHTML = `
                         <div style="display:flex; flex-direction:column; gap:12px; width:100%;">
                             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
@@ -1038,6 +1067,7 @@
                                     <div class="stat-badge ${st.class}">
                                         <i class="fas ${st.icon}"></i> ${st.label}
                                     </div>
+                                    ${lunchTimerHtml}
                                     ${rankBadge}
                                 </div>
                                 <div style="background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">

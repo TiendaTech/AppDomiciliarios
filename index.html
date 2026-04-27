@@ -1020,10 +1020,15 @@
                     const estados = {
                         "activo": { label: "Libre", icon: "fa-check-circle", class: "status-free" },
                         "ruta": { label: "En Ruta", icon: "fa-motorcycle", class: "status-route" },
-                        "almuerzo": { label: "Almorzando", icon: "fa-hamburger", class: "status-lunch" },
+                        "almorzando": { label: "Almorzando", icon: "fa-hamburger", class: "status-lunch" },
                         "inactivo": { label: "Inactivo", icon: "fa-minus-circle", class: "status-inactive" }
                     };
                     const st = estados[hoy.estado] || { label: "En turno", icon: "fa-user-clock", class: "" };
+
+                    let almorzoBadge = '';
+                    if (hoy.yaAlmorzo && hoy.estado !== "almorzando") {
+                        almorzoBadge = `<div style="background:var(--success); color:white; padding:6px 14px; border-radius:20px; font-size:0.75rem; font-weight:800; display:inline-flex; align-items:center; gap:5px; animation: zoomIn 0.3s ease;"><i class="fas fa-utensils"></i> Almorzó</div>`;
+                    }
 
                     let rankBadge = '';
                     if (rankHoy) {
@@ -1068,6 +1073,7 @@
                                         <i class="fas ${st.icon}"></i> ${st.label}
                                     </div>
                                     ${lunchTimerHtml}
+                                    ${almorzoBadge}
                                     ${rankBadge}
                                 </div>
                                 <div style="background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px;">

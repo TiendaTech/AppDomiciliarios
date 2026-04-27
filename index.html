@@ -1008,6 +1008,9 @@
                 
                 const statsHoy = document.getElementById('stats-hoy');
                 if (hoy) {
+                    const sedeActual = hoy.sede || user.sede || 'Global';
+                    document.getElementById('domi-sede').innerText = `Sede ${sedeActual}`;
+
                     const liq = calcularLiquidacionDomi(hoy, user);
                     animateValue("domi-total", 0, liq.total, 1000);
                     document.getElementById('domi-rutas').innerText = hoy.entregasRealizadas || 0;
@@ -1046,6 +1049,7 @@
                         </div>
                     `;
                 } else {
+                    document.getElementById('domi-sede').innerText = `Sede ${user.sede || 'Global'}`;
                     document.getElementById('domi-total').innerText = "$ 0";
                     document.getElementById('domi-rutas').innerText = "0";
                     document.getElementById('domi-tortas').innerText = "0";
@@ -1161,7 +1165,7 @@
             if (unicos.length === 0) {
                 html += `<div class="empty-state">Sin actividad registrada en esta semana.</div>`;
             } else {
-                unicos.sort((a,b) => a.timestamp - b.timestamp).forEach(r => {
+                unicos.sort((a,b) => b.timestamp - a.timestamp).forEach(r => {
                     const totDia = parseInt(r.tot || 0);
                     totalBruto += totDia;
                     

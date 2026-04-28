@@ -8,31 +8,31 @@
     <!-- Estilo Premium -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#2596be">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <script>
-      // Solo cargar manifest y SW en HTTP/HTTPS (no funciona en file:///)
-      if (location.protocol === 'http:' || location.protocol === 'https:') {
-        // Agregar manifest dinámicamente
-        const manifestLink = document.createElement('link');
-        manifestLink.rel = 'manifest';
-        manifestLink.href = 'manifest.json';
-        document.head.appendChild(manifestLink);
+        // Solo cargar manifest y SW en HTTP/HTTPS (no funciona en file:///)
+        if (location.protocol === 'http:' || location.protocol === 'https:') {
+            // Agregar manifest dinámicamente
+            const manifestLink = document.createElement('link');
+            manifestLink.rel = 'manifest';
+            manifestLink.href = 'manifest.json';
+            document.head.appendChild(manifestLink);
 
-        // Registrar Service Worker
-        if ('serviceWorker' in navigator) {
-          window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js').catch(err => {
-              console.warn('SW registro omitido:', err.message);
-            });
-          });
+            // Registrar Service Worker
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('sw.js').catch(err => {
+                        console.warn('SW registro omitido:', err.message);
+                    });
+                });
+            }
         }
-      }
     </script>
-    
+
     <style>
         :root {
             --primary: #2596be;
@@ -82,7 +82,7 @@
             border-radius: 30px;
             width: 100%;
             max-width: 400px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             text-align: center;
         }
 
@@ -164,7 +164,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
             position: relative;
             z-index: 100;
         }
@@ -250,7 +250,7 @@
             position: absolute;
             width: 150px;
             height: 150px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             top: -50px;
             right: -50px;
@@ -274,7 +274,7 @@
         /* --- STATUS BADGES --- */
         .stat-badge {
             font-size: 0.8rem;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             padding: 6px 14px;
             border-radius: 20px;
             display: inline-flex;
@@ -283,18 +283,36 @@
             font-weight: 700;
             color: white;
             transition: 0.3s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .stat-badge i { font-size: 0.9rem; }
+        .stat-badge i {
+            font-size: 0.9rem;
+        }
 
-        .status-free { background: #00b894 !important; }     /* Verde */
-        .status-route { background: #0984e3 !important; }    /* Azul */
-        .status-lunch { background: #f39c12 !important; }    /* Naranja */
-        .status-inactive { background: #636e72 !important; } /* Gris */
+        .status-free {
+            background: #00b894 !important;
+        }
+
+        /* Verde */
+        .status-route {
+            background: #0984e3 !important;
+        }
+
+        /* Azul */
+        .status-lunch {
+            background: #f39c12 !important;
+        }
+
+        /* Naranja */
+        .status-inactive {
+            background: #636e72 !important;
+        }
+
+        /* Gris */
 
         .stat-badge.offline {
-            background: rgba(255,255,255,0.15) !important;
+            background: rgba(255, 255, 255, 0.15) !important;
             color: #ddd;
         }
 
@@ -312,7 +330,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
             border: 1px solid #eef2f7;
         }
 
@@ -331,9 +349,20 @@
             margin-top: 15px;
         }
 
-        .icon-blue { background: #eef8fb; color: var(--primary); }
-        .icon-green { background: #e8f5e9; color: var(--success); }
-        .icon-purple { background: #f5f3ff; color: var(--secondary); }
+        .icon-blue {
+            background: #eef8fb;
+            color: var(--primary);
+        }
+
+        .icon-green {
+            background: #e8f5e9;
+            color: var(--success);
+        }
+
+        .icon-purple {
+            background: #f5f3ff;
+            color: var(--secondary);
+        }
 
         .stat-data b {
             display: block;
@@ -366,7 +395,7 @@
             background: white;
             border-radius: 20px;
             padding: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
             border: 1px solid #eef2f7;
         }
 
@@ -432,8 +461,15 @@
 
         /* Animaciones */
         @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .animate-up {
@@ -462,15 +498,20 @@
         }
 
         @keyframes rotation {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* --- CUSTOM MODAL --- */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(5px);
             z-index: 2000;
             display: none;
@@ -494,7 +535,7 @@
             transform: scale(0.9);
             transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         }
 
         .modal-overlay.active .modal-content {
@@ -544,7 +585,7 @@
         #lightbox {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.95);
+            background: rgba(0, 0, 0, 0.95);
             z-index: 3000;
             display: none;
             flex-direction: column;
@@ -564,7 +605,7 @@
             box-shadow: 0 0 60px rgba(37, 150, 190, 0.4);
             transform: scale(0.5);
             transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 4px solid rgba(255,255,255,0.2);
+            border: 4px solid rgba(255, 255, 255, 0.2);
         }
 
         #lightbox.active {
@@ -584,7 +625,7 @@
             cursor: pointer;
             width: 50px;
             height: 50px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -684,17 +725,17 @@
             <img src="LOGO DOMIFASTER.png" alt="Domifaster">
             <h2>Portal del Colaborador</h2>
             <p>Ingresa con tu número de cédula para ver tus estadísticas y liquidación.</p>
-            
+
             <div class="input-box">
                 <i class="fas fa-id-card"></i>
                 <input type="number" id="input-cc" placeholder="Tu número de cédula" autocomplete="username">
             </div>
-            
+
             <button class="btn-login" id="btn-entrar" onclick="intentarLogin()">
                 <span id="btn-text">Ingresar</span>
                 <span class="loader" id="login-loader"></span>
             </button>
-            
+
             <div id="error-msg">❌ Cédula no encontrada en el sistema.</div>
         </div>
     </div>
@@ -708,7 +749,8 @@
                     <b id="domi-nombre">Cargando...</b>
                     <span id="domi-sede">--</span>
                 </div>
-                <input type="file" id="upload-avatar" accept="image/*" style="display:none;" onchange="handleAvatarUpload(event)">
+                <input type="file" id="upload-avatar" accept="image/*" style="display:none;"
+                    onchange="handleAvatarUpload(event)">
             </div>
             <button class="btn-logout" onclick="logout()">
                 <i class="fas fa-sign-out-alt"></i>
@@ -719,7 +761,8 @@
         <div id="lightbox" onclick="cerrarLightbox()">
             <div class="close-lightbox"><i class="fas fa-times"></i></div>
             <img id="lightbox-img" src="" alt="Profile" onclick="event.stopPropagation()">
-            <button class="btn-change-photo" onclick="event.stopPropagation(); cerrarLightbox(); document.getElementById('upload-avatar').click()">
+            <button class="btn-change-photo"
+                onclick="event.stopPropagation(); cerrarLightbox(); document.getElementById('upload-avatar').click()">
                 <i class="fas fa-camera"></i> Cambiar Foto
             </button>
         </div>
@@ -762,7 +805,7 @@
             </div>
         </main>
 
-        <a href="https://wa.me/573000000000" class="btn-wa-support" target="_blank">
+        <a href="https://wa.me/573003024889" class="btn-wa-support" target="_blank">
             <i class="fab fa-whatsapp"></i>
         </a>
     </div>
@@ -808,7 +851,7 @@
         let currentDeducciones = [];
 
         // --- Lógica de Login ---
-        window.intentarLogin = function() {
+        window.intentarLogin = function () {
             const cc = document.getElementById('input-cc').value.trim();
             const btnText = document.getElementById('btn-text');
             const loader = document.getElementById('login-loader');
@@ -840,8 +883,8 @@
 
         window.currentUserKey = null;
 
-        window.updateProfile = function(updates) {
-            if(!window.currentUserKey) return;
+        window.updateProfile = function (updates) {
+            if (!window.currentUserKey) return;
             const userRef = ref(db, `personal_maestro/${window.currentUserKey}`);
             update(userRef, updates).then(() => {
                 if (updates.alias) {
@@ -856,7 +899,7 @@
             });
         };
 
-        window.editarNombreDomi = function() {
+        window.editarNombreDomi = function () {
             const input = document.getElementById('input-edit-name');
             input.value = currentUser.alias || currentUser.nombre;
             const modal = document.getElementById('modal-edit-profile');
@@ -865,32 +908,32 @@
             input.focus();
         };
 
-        window.cerrarModalPerfil = function() {
+        window.cerrarModalPerfil = function () {
             const modal = document.getElementById('modal-edit-profile');
             modal.classList.remove('active');
             setTimeout(() => modal.style.display = 'none', 300);
         };
 
-        window.guardarPerfil = function() {
+        window.guardarPerfil = function () {
             const nuevoNombre = document.getElementById('input-edit-name').value.trim();
-            if(nuevoNombre !== "") {
+            if (nuevoNombre !== "") {
                 window.updateProfile({ alias: nuevoNombre });
                 cerrarModalPerfil();
             }
         };
 
-        window.handleAvatarUpload = function(e) {
+        window.handleAvatarUpload = function (e) {
             const file = e.target.files[0];
-            if(!file) return;
+            if (!file) return;
             const reader = new FileReader();
-            reader.onload = function(evt) {
+            reader.onload = function (evt) {
                 const img = new Image();
-                img.onload = function() {
+                img.onload = function () {
                     const canvas = document.createElement('canvas');
                     const max = 800;
                     let w = img.width; let h = img.height;
-                    if(w > h) { if(w > max) { h *= max/w; w = max; } }
-                    else { if(h > max) { w *= max/h; h = max; } }
+                    if (w > h) { if (w > max) { h *= max / w; w = max; } }
+                    else { if (h > max) { w *= max / h; h = max; } }
                     canvas.width = w; canvas.height = h;
                     const ctx = canvas.getContext('2d');
                     ctx.imageSmoothingEnabled = true;
@@ -904,7 +947,7 @@
             reader.readAsDataURL(file);
         };
 
-        window.mostrarFotoGrande = function() {
+        window.mostrarFotoGrande = function () {
             if (currentUser && currentUser.foto) {
                 document.getElementById('lightbox-img').src = currentUser.foto;
                 const lb = document.getElementById('lightbox');
@@ -916,7 +959,7 @@
             }
         };
 
-        window.cerrarLightbox = function() {
+        window.cerrarLightbox = function () {
             const lb = document.getElementById('lightbox');
             lb.classList.remove('active');
             setTimeout(() => lb.style.display = 'none', 300);
@@ -925,10 +968,10 @@
         function iniciarSesionUI(user, userKey) {
             document.getElementById('login-screen').style.transform = 'translateY(-100%)';
             document.getElementById('app-content').style.display = 'flex';
-            
+
             currentUser = user;
             window.currentUserKey = userKey;
-            
+
             const displayNombre = user.alias || user.nombre;
             if (user.foto) {
                 document.getElementById('domi-avatar').innerHTML = `<img src="${user.foto}">`;
@@ -974,18 +1017,18 @@
             onValue(domRef, (snap) => {
                 const data = snap.val() || {};
                 const lista = Object.values(data);
-                
+
                 const hoy = lista.find(d => {
-                    if(!d || !d.nombre) return false;
+                    if (!d || !d.nombre) return false;
                     const nCheck = norm(d.nombre);
                     return nCheck === nameNorm || nCheck.includes(nameNorm) || nameNorm.includes(nCheck);
                 });
-                
+
                 let rankHoy = null;
                 if (hoy) {
                     const miSede = hoy.sede || user.sede || 'Global';
                     const domisSede = lista.filter(d => (d.sede || 'Global') === miSede);
-                    
+
                     domisSede.sort((a, b) => {
                         const rA = parseInt(a.entregasRealizadas || 0);
                         const rB = parseInt(b.entregasRealizadas || 0);
@@ -994,9 +1037,9 @@
                         const tB = parseInt(b.tortasPescado || b.t || 0);
                         return tB - tA;
                     });
-                    
+
                     const userIndex = domisSede.findIndex(d => {
-                        if(!d || !d.nombre) return false;
+                        if (!d || !d.nombre) return false;
                         const nCheck = norm(d.nombre);
                         return nCheck === nameNorm || nCheck.includes(nameNorm) || nameNorm.includes(nCheck);
                     });
@@ -1005,7 +1048,7 @@
                         rankHoy = userIndex + 1;
                     }
                 }
-                
+
                 const statsHoy = document.getElementById('stats-hoy');
                 if (hoy) {
                     const sedeActual = hoy.sede || user.sede || 'Global';
@@ -1015,7 +1058,7 @@
                     animateValue("domi-total", 0, liq.total, 1000);
                     document.getElementById('domi-rutas').innerText = hoy.entregasRealizadas || 0;
                     document.getElementById('domi-tortas').innerText = hoy.tortasPescado || hoy.t || 0;
-                    
+
                     // Mapeo de estados con colores e iconos
                     const estados = {
                         "activo": { label: "Libre", icon: "fa-check-circle", class: "status-free" },
@@ -1108,12 +1151,12 @@
                                 const nCheck = norm(det.n);
                                 return nCheck === nameNorm || nCheck.includes(nameNorm) || nameNorm.includes(nCheck);
                             });
-                            
+
                             if (d) {
                                 const miSede = d.sede || d.s || user.sede || 'Global';
                                 const domisSedeHist = h.detalle.filter(det => (det.sede || det.s || 'Global') === miSede);
-                                
-                                domisSedeHist.sort((a,b) => {
+
+                                domisSedeHist.sort((a, b) => {
                                     const rA = parseInt(a.e || a.entregasRealizadas || 0);
                                     const rB = parseInt(b.e || b.entregasRealizadas || 0);
                                     if (rB !== rA) return rB - rA;
@@ -1124,7 +1167,7 @@
 
                                 let rankHist = null;
                                 const userIndexHist = domisSedeHist.findIndex(det => {
-                                    if(!det || !det.n) return false;
+                                    if (!det || !det.n) return false;
                                     const nCheck = norm(det.n);
                                     return nCheck === nameNorm || nCheck.includes(nameNorm) || nameNorm.includes(nCheck);
                                 });
@@ -1164,7 +1207,7 @@
                 } else {
                     container.innerHTML = `<div class="empty-state">Sin deducciones pendientes.</div>`;
                 }
-                
+
                 currentDeducciones = listaDeds;
                 renderDetalleSemana();
             });
@@ -1175,7 +1218,7 @@
             if (!main) return;
 
             let historyWrapper = document.getElementById('history-wrapper');
-            if(!historyWrapper) {
+            if (!historyWrapper) {
                 historyWrapper = document.createElement('div');
                 historyWrapper.id = 'history-wrapper';
                 main.appendChild(historyWrapper);
@@ -1197,14 +1240,14 @@
                 </div>
                 <div class="deduction-list">
             `;
-            
+
             if (unicos.length === 0) {
                 html += `<div class="empty-state">Sin actividad registrada en esta semana.</div>`;
             } else {
-                unicos.sort((a,b) => b.timestamp - a.timestamp).forEach(r => {
+                unicos.sort((a, b) => b.timestamp - a.timestamp).forEach(r => {
                     const totDia = parseInt(r.tot || 0);
                     totalBruto += totDia;
-                    
+
                     let rankBadgeHtml = '';
                     if (r.rank) {
                         const medal = r.rank === 1 ? '🥇' : (r.rank === 2 ? '🥈' : '🥉');
@@ -1251,7 +1294,7 @@
                     </div>
                 `;
             }
-            
+
             html += `</div>`;
             historyWrapper.innerHTML = html;
         }
@@ -1259,10 +1302,10 @@
         function calcularLiquidacionDomi(d, m) {
             const norm = (s) => (s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
             const n = norm(d.nombre);
-            
+
             const isCoord = ["cristian munoz", "andres munoz", "nilton cardona"].includes(n);
             const isLid = ["jhon vega", "kevin villada"].includes(n);
-            
+
             let baseDaily = (m.salario) ? parseInt(m.salario.replace(/\D/g, "")) : 100000;
             let valBase = (d.inicioLaboral && d.inicioLaboral !== "--:--") || isCoord || isLid ? baseDaily : 0;
 
@@ -1270,7 +1313,7 @@
             let valBono = (!isCoord && !isLid && ent > 18) ? (ent - 18) * 10000 : 0;
 
             const parsear = (str) => {
-                if(!str) return null;
+                if (!str) return null;
                 const match = str.match(/(\d+):(\d+)\s*(AM|PM)/i);
                 if (!match) return null;
                 let hrs = parseInt(match[1]);
@@ -1310,7 +1353,7 @@
             window.requestAnimationFrame(step);
         }
 
-        window.logout = function() {
+        window.logout = function () {
             localStorage.removeItem('domi_user_cc');
             window.location.reload();
         }
@@ -1326,4 +1369,5 @@
 
     </script>
 </body>
+
 </html>
